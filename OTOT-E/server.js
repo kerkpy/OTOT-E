@@ -46,17 +46,14 @@ app.get("/all", async (req, res) => {
   redisClient.get(`contacts`, async (error, contacts) => {
       if (error) console.error(error);
       if (contacts != null) {
-          console.log("cache hit")
           return res.json(JSON.parse(contacts))
       } else {
-          console.log("cache miss")
           const data = await Contact.find({});
           redisClient.setex(
               `contacts`,
               1000,
               JSON.stringify(data)
           )
-          console.log(data)
           res.json(data);
       }
   })
